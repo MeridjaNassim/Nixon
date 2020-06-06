@@ -1,23 +1,43 @@
-import React from 'react';
+import  { FC } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Button } from 'antd';
-const Home = () => {
+
+import Layout from '../ui/layout/layout'
+
+import PasswordGenerator from '../ui/components/passwordGenerator';
+const Home: FC = () => {
+
   return (
-    <React.Fragment>
+    <>
       <Head>
-        <title>Home - Nextron (with-typescript)</title>
+        <title> ⚡ Home - Nixon Password Manager ⚡</title>
       </Head>
-      <div>
-        <p>
-          ⚡ Electron + Next.js ⚡ -
-          <Link href="/next">
-            <Button>Go to next page</Button>
-          </Link>
+      <Layout>
+        <div className="wrapper">
+          <img src="/images/nixon.png" width="400px" />
+          <p className="pre">
+            ⚡ Nixon Password Manager ⚡
         </p>
-        <img src="/images/logo.png" />
-      </div>
-    </React.Fragment>
+
+        <PasswordGenerator></PasswordGenerator>
+          <style jsx>{`
+            .wrapper {
+              width : 100%;
+              min-height: 100vh;
+              margin : 0 auto;
+              display : flex ;
+              flex-direction : column ;
+              justify-content : flex-start;
+              align-items : center;
+            
+            }
+            .pre {
+              color : grey;
+            }
+          `}</style>
+        </div>
+      </Layout>
+    </>
   );
 };
 
