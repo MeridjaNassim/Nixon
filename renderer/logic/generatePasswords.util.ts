@@ -15,7 +15,7 @@ export interface PasswordGenerationConfig  {
 
 /// result of computation
 export interface PasswordResult {
-
+    name?:string,
     password : string ,
     securityLevel : PasswordSecurityLevel
 }
@@ -74,7 +74,7 @@ export function getSecurityLevel(password : string) : PasswordSecurityLevel {
   if(password.length >= _minLength) points++;
   else {
       /// if the password is less than minLength is bad password
-      points = 0;
+      points -= 3;
   }
   let index = Math.min(points , _SECURITY_LEVELS.length-1)
   return _SECURITY_LEVELS[index]

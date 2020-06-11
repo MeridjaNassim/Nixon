@@ -14,7 +14,11 @@ const Home: FC = () => {
       </Head>
       <Layout>
         <div className="wrapper">
-          <img src="/images/nixon.png" width="400px" />
+          <img src="/images/nixon.png" style={{
+          
+            width : '50%',
+            maxWidth : '300px'
+          }}/>
           <p className="pre">
             ⚡ Nixon Password Manager ⚡
         </p>

@@ -1,15 +1,14 @@
-import { ReactElement, useState, ChangeEvent } from 'react'
-import { Button, notification, InputNumber, Checkbox, Input } from 'antd';
+import { ReactElement, useState, useEffect, ChangeEvent } from 'react'
+import { Button ,  Modal, notification, InputNumber, Checkbox, Input } from 'antd';
 import { generatePassword, PasswordGenerationConfig, PasswordResult, PasswordSecurityLevel , getSecurityLevel } from '../../logic/generatePasswords.util'
-import { CopyOutlined } from '@ant-design/icons';
+import { CopyOutlined ,DownloadOutlined} from '@ant-design/icons';
 import { NotificationPlacement } from 'antd/lib/notification';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
-
+import {PASSWORD_ENDPOINT } from "../../utils/endpoint"
 
 interface Props {
 
 }
-const { TextArea } = Input;
 export default function passwordGenerator({ }: Props): ReactElement {
     const [password, setPassword] = useState<PasswordResult>({
         password: '',
@@ -17,8 +16,9 @@ export default function passwordGenerator({ }: Props): ReactElement {
     })
     const [passwordParams, setPasswordParams] = useState<PasswordGenerationConfig>({
         length: 12,
-        memorable: true,
+        memorable: false,
     });
+    const [modalVisible , setModalVisible] = useState<boolean>(false);
     const openNotification = (placement: NotificationPlacement) => {
         notification.success({
             message: 'Copied to Clipboard',
@@ -35,9 +35,46 @@ export default function passwordGenerator({ }: Props): ReactElement {
         let pass = generatePassword(passwordParams)
         setPassword(pass)
     }
-    const onChangePasswordManually = (e : ChangeEvent<HTMLTextAreaElement>) =>{
+    const onChangePasswordManually = (e : ChangeEvent<HTMLInputElement>) =>{
         setPassword({ password : e.target.value , securityLevel : getSecurityLevel(e.target.value) })
     }
+   const showModal = () => {
+        setModalVisible(true)
+      };
+    
+      const handleOk = e => {
+        console.log(e);
+        console.log("Saving " , password)
+        savePassword(e)
+            .then( _ => setModalVisible(false))
+        
+      };
+    
+      const handleCancel = e => {
+        console.log(e);
+        setModalVisible(false)
+      };
+
+     useEffect(() => {
+         
+         return () => {
+          
+         }
+     }, []) 
+
+     const savePassword = (e : MouseEvent)=> {
+        e.preventDefault();
+        return fetch(PASSWORD_ENDPOINT, {
+            method : "POST",
+            headers :{
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+            },
+            body : JSON.stringify(password)
+        })
+           .then(res => res.json())
+           .then(json => console.log(json))
+     }
     return (
         <>
             <div>
@@ -47,26 +84,40 @@ export default function passwordGenerator({ }: Props): ReactElement {
                     openNotification('bottomRight')
                 }}> <CopyOutlined title="Copy to clipboard" style={{ margin: 0 }} /></Button>
                     : null}
-
+                {password.password !== '' ? <Button onClick={(e) => {
+                    showModal()
+                }}> <DownloadOutlined title="Save password" style={{ margin: 0 }} /></Button>
+                    : null}
             </div>
+            <Modal
+          title="Save generated password"
+          visible={modalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Input placeholder="Password Name" value={password.name} onChange={e=>{
+              setPassword({...password , name : e.target.value})
+          }}/>
+        </Modal>
             <div style={{
                 marginTop: '20px'
             }}>
                 <InputNumber min={1} max={50} defaultValue={3} onChange={onInputNumberChange} title="password length" />
-                <Checkbox style={{
+                <Checkbox  checked={passwordParams.memorable} style={{
                     marginLeft: '20px'
                 }} onChange={onCheckBoxChange}>memorable?</Checkbox>
             </div>
-            <TextArea style={{
+            <Input style={{
 
                 fontSize: '30px',
                 border: '2px solid var(--antd-wave-shadow-color)',
                 padding: "10px",
                 marginTop: '10px',
+                background : 'transparent',
                 maxWidth :"60%",
                 textAlign : "center",
                 color: 'var(--antd-wave-shadow-color)'
-            }} value={password.password} onChange={onChangePasswordManually}></TextArea>
+            }} value={password.password} onChange={onChangePasswordManually}></Input>
 
             <p>{(password.password === '') ? "hidden" : `Security Level : `} <span style={{
                 color: getColorBasedOnSecurityLevel(password.securityLevel)
@@ -83,24 +134,24 @@ const getColorBasedOnSecurityLevel = (securityLevel: PasswordSecurityLevel): str
     switch (securityLevel) {
         case "Very Low":
             return "red"
-            break;
+        
         case "Low":
             return "lightred"
-            break;
+         
         case "Average":
             return "lightorange"
-            break;
+           
         case "Medium":
             return "orange"
-            break;
+        
         case "High":
             return "lightgreen"
-            break;
+        
         case "Very High":
             return "green"
-            break;
+          
         default:
-            return "transparent"
-            break;
+            return "red"
+           
     }
 }

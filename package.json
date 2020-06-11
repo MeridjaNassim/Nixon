@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
+    "@journeyapps/sqlcipher": "^4.1.0",
     "electron-serve": "^1.0.0",
     "electron-store": "^5.1.1",
     "password-generator": "^2.3.2"

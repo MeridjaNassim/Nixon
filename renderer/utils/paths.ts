@@ -1,0 +1,1 @@
+export const PASSWORD_JSON_FILE = 'data/stored/passwords.json'
