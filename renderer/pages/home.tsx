@@ -3,8 +3,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import Layout from '../ui/layout/layout'
-
-import PasswordGenerator from '../ui/components/passwordGenerator';
 const Home: FC = () => {
 
   return (
@@ -23,7 +21,9 @@ const Home: FC = () => {
             ⚡ Nixon Password Manager ⚡
         </p>
 
-        <PasswordGenerator></PasswordGenerator>
+          <Link href="/password">
+            <button>Go to generate password</button>
+          </Link>
           <style jsx>{`
             .wrapper {
               width : 100%;

@@ -16,7 +16,7 @@ async function main() {
         
 
 
-    const users = db.get('passwords').find({user_id : 1}).value()
+    const users =db.get('passwords')
     console.log(users)
 }
 

@@ -76,7 +76,8 @@ export function getSecurityLevel(password : string) : PasswordSecurityLevel {
       /// if the password is less than minLength is bad password
       points -= 3;
   }
-  let index = Math.min(points , _SECURITY_LEVELS.length-1)
+  points =Math.max(points,0);
+  let index = Math.min(points  , _SECURITY_LEVELS.length-1)
   return _SECURITY_LEVELS[index]
 }
 
