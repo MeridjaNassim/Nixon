@@ -1,12 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {saveToDb} from '../../logic/controllers/save.controller'
+import {savePasswordToDb} from '../../logic/controllers/password.controller'
 
 const addPassword = async (req : NextApiRequest , res : NextApiResponse) =>  {
   const {password, name } :{password : string  , name : string} = req.body
-  console.log(password)
-  console.log(name)
   if(password) {
-    let {success,payload} = await saveToDb({
+    let {success,payload} = await savePasswordToDb({
       password , 
       name
     })
