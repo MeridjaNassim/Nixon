@@ -1,17 +1,25 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {saveToJsonFile} from '../../logic/controllers/save.controller'
+import {saveToDb} from '../../logic/controllers/save.controller'
 
 const addPassword = async (req : NextApiRequest , res : NextApiResponse) =>  {
+  const {password, name } :{password : string  , name : string} = req.body
+  console.log(password)
+  console.log(name)
+  if(password) {
+    let {success,payload} = await saveToDb({
+      password , 
+      name
+    })
 
-  
-
-  let {success,payload} = await saveToJsonFile(req.body,'N:\\JSprojects\\nextron-password-manager\\renderer\\data\\stored\\passwords.json')
-
-  if(success) {
-    res.status(200).json(payload)
+    if(success) {
+      res.status(200).json(payload)
+    }else {
+      res.status(500).send(payload)
+    }
   }else {
-    res.status(500).send(payload)
+    res.status(400).send({msg : 'Password not sent !'})
   }
+  
 
 }
 

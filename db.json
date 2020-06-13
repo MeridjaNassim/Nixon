@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "Nassim Meridja"
+    }
+  ],
+  "passwords": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "cipher": "aaiegfaepuogaeugbaegeag",
+      "hash": "age&\"&\"&gaegeagdava"
+    },
+    {
+      "id": 2,
+      "user_id": 1,
+      "cipher": "aaiegfaepuogaeugbaegeag",
+      "hash": "age&\"&\"&gaegeagdava"
+    },
+    {
+      "id": 2,
+      "user_id": 1,
+      "cipher": "aaiegfaepuogaeugbaegeag",
+      "hash": "age&\"&\"&gaegeagdava"
+    }
+  ]
+}

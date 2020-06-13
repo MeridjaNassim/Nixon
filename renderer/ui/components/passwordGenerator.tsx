@@ -1,11 +1,12 @@
 import { ReactElement, useState, useEffect, ChangeEvent } from 'react'
-import { Button ,  Modal, notification, InputNumber, Checkbox, Input } from 'antd';
-import { generatePassword, PasswordGenerationConfig, PasswordResult, PasswordSecurityLevel , getSecurityLevel } from '../../logic/generatePasswords.util'
+import { Button ,  Modal, notification, InputNumber, Checkbox, Input , Divider} from 'antd';
+
 import { CopyOutlined ,DownloadOutlined} from '@ant-design/icons';
 import { NotificationPlacement } from 'antd/lib/notification';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import {PASSWORD_ENDPOINT } from "../../utils/endpoint"
-
+import { PasswordGenerationConfig, PasswordResult, PasswordSecurityLevel  } from '../../logic/generatePasswords.util'
+import passwordService from '../../logic/services/password_generator.service'
 interface Props {
 
 }
@@ -32,11 +33,11 @@ export default function passwordGenerator({ }: Props): ReactElement {
         setPasswordParams({ ...passwordParams, memorable: e.target.checked })
     }
     const generateNewPassword = () => {
-        let pass = generatePassword(passwordParams)
+        let pass = passwordService.generatePassword(passwordParams)
         setPassword(pass)
     }
     const onChangePasswordManually = (e : ChangeEvent<HTMLInputElement>) =>{
-        setPassword({ password : e.target.value , securityLevel : getSecurityLevel(e.target.value) })
+        setPassword({ password : e.target.value , securityLevel : passwordService.getSecurityLevel(e.target.value) })
     }
    const showModal = () => {
         setModalVisible(true)
@@ -95,9 +96,14 @@ export default function passwordGenerator({ }: Props): ReactElement {
           onOk={handleOk}
           onCancel={handleCancel}
         >
-          <Input placeholder="Password Name" value={password.name} onChange={e=>{
+            <label>
+                Password
+            <Input placeholder="Password Name" value={password.name} onChange={e=>{
               setPassword({...password , name : e.target.value})
           }}/>
+            </label>
+         
+      
         </Modal>
             <div style={{
                 marginTop: '20px'
