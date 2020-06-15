@@ -53,12 +53,12 @@ export default function passwordGenerator({ }: Props): ReactElement {
         let res = await sendPassword(password);
         if(res.status == 200) {
             notification.success({
-                message : 'Saved password to db',
+                message : 'Nixon saved your password succesfully',
                 placement : 'bottomRight'
             })
         }else {
             notification.error({
-                message : 'Error while saving password to db',
+                message : 'Nixon was enable to save your password',
                 placement : 'bottomRight'
             })
         }
