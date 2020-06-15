@@ -1,6 +1,6 @@
 import low from 'lowdb'
-import FileAsync from 'lowdb/adapters/FileAsync'
-import {AESerializerBase64} from './serialization'
+import FileSync from 'lowdb/adapters/FileSync'
+import {AESerializerBase64 , Serializer, serializer_json} from './serialization'
 /// Data Schema to save
 interface Data {}
 
@@ -29,35 +29,46 @@ export interface DBSaveData {
     data : Data
 }
 export interface Database {
-    save(data : DBSaveData) : Promise<boolean>,
+    _serializer? : Serializer
+    save(data : DBSaveData) :boolean,
     getAll() : any
 }
 class LowDB implements Database {
-    private _db : low.LowdbAsync<any>
+    private _db : low.LowdbSync<any>
     private _dbPath  : string
     private _store : any[]
-    private dbKey : string ;
-    constructor (dbPath : string, dbKey : string) {
+    _serializer : Serializer
+    constructor (dbPath : string, serializer?: Serializer ) {
         this._dbPath = dbPath;
-        this.dbKey = dbKey;
+        this._serializer = serializer
         this._init()
         this._store = []
     }
-    private async _init() {
-        let adapter =  new FileAsync(this._dbPath, {
-            serialize :(data)=> AESerializerBase64.encrypt(JSON.stringify(data),this.dbKey),
-            deserialize : (data)=> JSON.parse(AESerializerBase64.decrypt(data,this.dbKey))
+    private _init() {
+        let adapter =  new FileSync(this._dbPath, {
+            serialize :(data)=> this._serializer.serialize(data),
+            deserialize : (data)=> this._serializer.deserialize(data)
         })
-        this._db = await low(adapter);
+        this._db =  low(adapter);
+        this._db.defaults({ passwords: [], users: [], sites: [] })
+                .write()
+
     }
-    public async save(data : DBSaveData) : Promise<boolean> {
-      this._db.get(data.collection)
-      //TODO implement saving logic 
+    public  save(data : DBSaveData) : boolean {
+        if(this._db) {
+            this._db.get(data.collection).push(data.data).write()
+        }else {
+            console.log('undefined db')
+        }
+        
        return true        
       
     }
-    public async getAll() {
-        return this._store
+    public  getAll() {
+        console.log("Retreived data from db " , this._db.get('passwords').value())
     }
 }
-export const lowDb = new LowDB('db.json','XttZ2gWeMCAzM6YyhYRU')
+
+const serializer_with_aes_encryption = AESerializerBase64.setSecreteKey('XttZ2gWeMCAzM6YyhYRU')
+
+export const lowDb = new LowDB('db.json',serializer_with_aes_encryption)

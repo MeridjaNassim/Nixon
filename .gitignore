@@ -3,3 +3,5 @@ node_modules
 .next
 app
 dist
+*/db.json
+db.json
